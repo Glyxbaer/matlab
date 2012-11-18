@@ -2,7 +2,7 @@
 % example: show_ct_image_fan_reconstruction(descr,1,360,200,360)
 
 function show_ct_image(image_descriptor,pfrom,pto,pdistance,psteps)
-    global from to steps distance original_img text_from text_to text_distance text_steps
+    global from to steps distance original_img text_from text_to text_distance text_steps textd1 textd2 textd3 textd4 textd5
     from = pfrom;
     to = pto;
     distance = pdistance;
@@ -27,20 +27,31 @@ function show_ct_image(image_descriptor,pfrom,pto,pdistance,psteps)
                 i=i+7;
         end
     end
-
+    
+    
+    textd1 = uicontrol('Style','text','Position',[30,60,95,15],'String','d1 = ');
+    textd2 = uicontrol('Style','text','Position',[130,60,95,15],'String','d2 = ');
+    textd3 = uicontrol('Style','text','Position',[230,60,95,15],'String','d3 = ');
+    textd4 = uicontrol('Style','text','Position',[330,60,95,15],'String','d4 = ');
+    textd5 = uicontrol('Style','text','Position',[430,60,95,15],'String','d5 = ');
+    uicontrol('Style','text','Position',[30,80,480,15],'String','--- Kennzahlen ---');
+    
     scan_object();
-
+    
     % --- draw the gui stuff ---
     uicontrol('Style','text','Position',[30,190,480,15],'String','--- some awesome sliders ---');
     text_distance = uicontrol('Style','text','Position',[30,170,120,15],'String',strcat(num2str(distance),' px'));
     text_from = uicontrol('Style','text','Position',[30,150,120,15],'String',strcat(num2str(from),' grad'));
     text_to = uicontrol('Style','text','Position',[30,130,120,15],'String',strcat(num2str(to),' grad'));
     text_steps = uicontrol('Style','text','Position',[30,110,120,15],'String',strcat(num2str(steps),'/360 steps'));
+    
+
+    
     uicontrol('Style','slider','Min',1,'Max',1000, 'Value',distance ,'SliderStep',[1/1000 0.01],'Position',[150,170,360,15],'Callback',@change_distance);
     uicontrol('Style','slider','Min',1,'Max',360, 'Value',from ,'SliderStep',[1/360 0.1],'Position',[150,150,360,15],'Callback',@change_from);
     uicontrol('Style','slider','Min',1,'Max',360, 'Value',to ,'SliderStep',[1/360 0.1],'Position',[150,130,360,15],'Callback',@change_to);
     uicontrol('Style','edit', 'Value',steps,'Position',[150,110,360,20],'Callback',@change_steps);
-
+    
 end
 
 % --- callback for slider moving ---
@@ -77,7 +88,7 @@ end
 
 % --- draws and calculates the plots ---
 function scan_object()
-    global from to distance original_img steps
+    global from to distance original_img steps textd1 textd2 textd3 textd4 textd5
     output_size = max(size(original_img));
     
     % --- do a fan scan ---
@@ -97,6 +108,29 @@ function scan_object()
     subplot(3,2,2);
     image(reconstructed_img);
     
-    subplot(3,2,1)
+    subplot(3,2,1);
     image(original_img);
+    
+    delta(original_img, reconstructed_img);
+
+
+end
+
+function delta(original_img, reconstructed_img)
+    
+    global textd1 textd2 textd3 textd4 textd5
+
+    d1 = delta_index(original_img, reconstructed_img, 1);
+    d2 = delta_index(original_img, reconstructed_img, 2);
+    d3 = delta_index(original_img, reconstructed_img, 3);
+    d4 = delta_index(original_img, reconstructed_img, 4);
+    d5 = delta_index(original_img, reconstructed_img, 5);
+   
+   
+    set(textd1,'String', strcat('d1 = ', num2str(d1)));
+    set(textd2,'String', strcat('d2 = ', num2str(d2)));
+    set(textd3,'String', strcat('d3 = ', num2str(d3)));
+    set(textd4,'String', strcat('d4 = ', num2str(d4)));
+    set(textd5,'String', strcat('d5 = ', num2str(d5)));
+
 end
