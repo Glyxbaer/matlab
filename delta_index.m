@@ -30,7 +30,7 @@ function ret=getDiff2(A,B)
     Z = imabsdiff(A,B);
     a = times(Z,Z);
     
-    ret = sqrt(sum(sum(a)))/ numel(a);
+    ret = sqrt(sum(sum(a))/ numel(a));
 
 end
 
